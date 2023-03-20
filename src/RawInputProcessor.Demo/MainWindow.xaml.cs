@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 namespace RawInputProcessor.Demo
 {
@@ -43,7 +44,17 @@ namespace RawInputProcessor.Demo
         {
             Event = e;
             DeviceCount = _rawInput.NumberOfKeyboards;
-            e.Handled = (ShouldHandle.IsChecked == true);
+            //e.Handled = (ShouldHandle.IsChecked == true);
+            if (ShouldHandle.IsChecked == true)
+            {
+                if (/*e.Device.Name.Contains("") &&*/
+                    e.Key == System.Windows.Input.Key.Space)
+                {
+                    e.Handled = true;
+                    return;
+                }
+            }
+            e.Handled = false;
         }
 
         protected override void OnSourceInitialized(EventArgs e)
@@ -54,7 +65,9 @@ namespace RawInputProcessor.Demo
 
         private void StartWndProcHandler()
         {
-            _rawInput = new RawPresentationInput(this, RawInputCaptureMode.Foreground);
+            MessageBox.Show(Environment.OSVersion.Version.ToString());
+            bool addMessageFilter = Environment.OSVersion.Version.Major >= 10; //https://blog.csdn.net/Qsir/article/details/75095893
+            _rawInput = new RawPresentationInput(this, RawInputCaptureMode.ForegroundAndBackground, addMessageFilter);
             _rawInput.KeyPressed += OnKeyPressed;
             DeviceCount = _rawInput.NumberOfKeyboards;
         }

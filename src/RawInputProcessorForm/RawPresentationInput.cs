@@ -68,13 +68,14 @@ namespace RawInputProcessor
         {
             //handled = KeyboardDriver.HandleMessage(msg.message, msg.wParam, msg.lParam); //Windows 10以下系统才能PeekMessage
 
-            if (msg.message == Win32Consts.WM_INPUT)
+            bool handle = KeyboardDriver.HandleMessage(msg.message, msg.wParam, msg.lParam);
+
+            if (handle && msg.message == Win32Consts.WM_INPUT)
             {
-                if (KeyboardDriver.HandleMessage(msg.message, msg.wParam, msg.lParam))
-                    this.filterNext = true;
+                this.filterNext = handle;
             }
 
-            if (msg.message == Win32Consts.WM_KEYDOWN && this.filterNext)
+            if (this.filterNext && msg.message == Win32Consts.WM_KEYDOWN)
             {
                 this.filterNext = false;
                 handled = true;
