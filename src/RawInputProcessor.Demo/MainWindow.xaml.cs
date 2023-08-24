@@ -2,6 +2,8 @@
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace RawInputProcessor.Demo
 {
@@ -18,6 +20,11 @@ namespace RawInputProcessor.Demo
         {
             DataContext = this;
             InitializeComponent();
+
+            foreach (var key in Enum.GetValues(typeof(Key)))
+            {
+                cbxPttKey.Items.Add(key.ToString());
+            }
         }
 
         public int DeviceCount
@@ -47,8 +54,8 @@ namespace RawInputProcessor.Demo
             //e.Handled = (ShouldHandle.IsChecked == true);
             if (ShouldHandle.IsChecked == true)
             {
-                if (/*e.Device.Name.Contains("") &&*/
-                    e.Key == System.Windows.Input.Key.Space)
+                if (e.Device.Name.Contains(keyboardName.Text) && e.Key.ToString() == cbxPttKey.Text)
+                    //e.Key == System.Windows.Input.Key.Space)
                 {
                     e.Handled = true;
                     return;
@@ -65,7 +72,7 @@ namespace RawInputProcessor.Demo
 
         private void StartWndProcHandler()
         {
-            MessageBox.Show(Environment.OSVersion.Version.ToString());
+            this.Title += $"   系统版本：{Environment.OSVersion.Version},Major={Environment.OSVersion.Version.Major}";
             bool addMessageFilter = Environment.OSVersion.Version.Major >= 10; //https://blog.csdn.net/Qsir/article/details/75095893
             _rawInput = new RawPresentationInput(this, RawInputCaptureMode.ForegroundAndBackground, addMessageFilter);
             _rawInput.KeyPressed += OnKeyPressed;

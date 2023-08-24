@@ -26,12 +26,18 @@
             <TextBlock Text="{Binding Event.Device.Type, StringFormat='{}{0}'}" />
             <TextBlock Text="{Binding Event.Device.Description}" />
             <TextBlock Text="{Binding DeviceCount, StringFormat='Device Count: {0}'}" />
-            <TextBlock Text="Test Input"
+            <StackPanel Orientation="Horizontal">
+                <CheckBox Name="ShouldHandle" VerticalAlignment="Center" 
+                          Margin="3" FontSize="20" IsChecked="True"
+                          Content="是否拦截键盘" />
+                <TextBlock Text="PTT键盘名称：" VerticalAlignment="Center" ></TextBlock>
+                <TextBox x:Name="keyboardName" VerticalAlignment="Center"  MinWidth="250" Text="HID#VID_04D9&amp;PID_1203"></TextBox>
+                <TextBlock Text="PTT键盘按键：" VerticalAlignment="Center" ></TextBlock>
+                <ComboBox x:Name="cbxPttKey" VerticalAlignment="Center" MinWidth="100" SelectedValue="Space" IsEditable="True"></ComboBox>
+            </StackPanel>
+            <TextBlock Text="输入框测试："
                        Style="{StaticResource HeaderTextStyle}" />
             <TextBox />
-            <CheckBox Name="ShouldHandle"
-                      Margin="3"
-                      Content="Handle events" />
         </StackPanel>
     </ScrollViewer>
 </Window>
