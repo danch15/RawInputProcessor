@@ -182,5 +182,4 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 /.vs
-/src/.vs/RawInputProcessor/FileContentIndex
-/src/.vs/RawInputProcessor/v17
+/src/.vs
