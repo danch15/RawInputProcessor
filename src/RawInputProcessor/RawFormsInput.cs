@@ -74,6 +74,11 @@ namespace RawInputProcessor
                     return true;
                 }
 
+                if (m.Msg == Win32Consts.WM_INPUT_DEVICE_CHANGE)
+                {
+                    _rawFormsInput.KeyboardDriver.HandleMessage(m.Msg, m.WParam, m.LParam);
+                }
+
                 return false;
             }
         }

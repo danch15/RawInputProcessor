@@ -79,6 +79,11 @@ namespace RawInputProcessor
                 this.filterNext = false;
                 handled = true;
             }
+
+            if (msg.message == Win32Consts.WM_INPUT_DEVICE_CHANGE)
+            {
+                KeyboardDriver.HandleMessage(msg.message, msg.wParam, msg.lParam);
+            }
         }
     }
 }
