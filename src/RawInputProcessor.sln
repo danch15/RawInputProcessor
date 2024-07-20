@@ -1,15 +1,14 @@
-
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33417.168
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RawInputProcessor", "RawInputProcessor\RawInputProcessor.csproj", "{6480E255-35A3-4D61-B48C-F6EFBCAEF891}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RawInputProcessorCore", "RawInputProcessor\RawInputProcessorCore.csproj", "{6480E255-35A3-4D61-B48C-F6EFBCAEF891}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RawInputProcessor.Demo", "RawInputProcessor.Demo\RawInputProcessor.Demo.csproj", "{6D678BEC-3454-4ADF-89D9-AAD1ED05C71A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RawInputProcessorForm", "RawInputProcessorForm\RawInputProcessorForm.csproj", "{73FC256C-65CD-4FFE-ADB1-11322455E324}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RawInputProcessorFormCore", "RawInputProcessorForm\RawInputProcessorFormCore.csproj", "{73FC256C-65CD-4FFE-ADB1-11322455E324}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RawInputProcessorForm.Demo", "RawInputProcessorForm.Demo\RawInputProcessorForm.Demo.csproj", "{B00B744C-7E7D-4E3C-B63C-1D43166F30CF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RawInputProcessorForm.Demo", "RawInputProcessorForm.Demo\RawInputProcessorForm.Demo.csproj", "{B00B744C-7E7D-4E3C-B63C-1D43166F30CF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

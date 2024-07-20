@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Globalization;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
@@ -25,6 +26,13 @@ namespace RawInputProcessor.Demo
             {
                 cbxPttKey.Items.Add(key.ToString());
             }
+
+            this.Loaded += MainWindow_Loaded;
+        }
+
+        private void MainWindow_Loaded(object sender, RoutedEventArgs e)
+        {
+            InputTextBox.Focus();
         }
 
         public int DeviceCount
@@ -55,7 +63,7 @@ namespace RawInputProcessor.Demo
             if (ShouldHandle.IsChecked == true)
             {
                 if (e.Device.Name.Contains(keyboardName.Text) && e.Key.ToString() == cbxPttKey.Text)
-                    //e.Key == System.Windows.Input.Key.Space)
+                //e.Key == System.Windows.Input.Key.Space)
                 {
                     e.Handled = true;
                     return;
@@ -88,6 +96,22 @@ namespace RawInputProcessor.Demo
             {
                 propertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        private void CatchButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Event?.Device != null)
+            {
+                int i = Event.Device.Name.IndexOf("VID");
+                if (i >= 0 && Event.Device.Name.Length >= i + 17)
+                {
+                    keyboardName.Text = Event.Device.Name.Substring(i, 17);
+                }
+
+                cbxPttKey.SelectedValue = Event.Key.ToString();
+            }
+
+            InputTextBox.Focus();
         }
     }
 }

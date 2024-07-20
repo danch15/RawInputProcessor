@@ -27,17 +27,17 @@
             <TextBlock Text="{Binding Event.Device.Description}" />
             <TextBlock Text="{Binding DeviceCount, StringFormat='Device Count: {0}'}" />
             <StackPanel Orientation="Horizontal">
-                <CheckBox Name="ShouldHandle" VerticalAlignment="Center" 
-                          Margin="3" FontSize="20" IsChecked="True"
-                          Content="是否拦截键盘" />
-                <TextBlock Text="PTT键盘名称：" VerticalAlignment="Center" ></TextBlock>
-                <TextBox x:Name="keyboardName" VerticalAlignment="Center"  MinWidth="250" Text="HID#VID_04D9&amp;PID_1203"></TextBox>
-                <TextBlock Text="PTT键盘按键：" VerticalAlignment="Center" ></TextBlock>
-                <ComboBox x:Name="cbxPttKey" VerticalAlignment="Center" MinWidth="100" SelectedValue="Space" IsEditable="True"></ComboBox>
+                <CheckBox Name="ShouldHandle" VerticalAlignment="Center" VerticalContentAlignment="Center"
+                          IsChecked="True"
+                          Content="启动拦截：" />
+                <TextBlock Text="PTT键盘VID_PID：" VerticalAlignment="Center" />
+                <TextBox x:Name="keyboardName" VerticalAlignment="Center"  MinWidth="150" Text="VID_04D9&amp;PID_1203" Width="170"/>
+                <TextBlock Text="PTT按键：" VerticalAlignment="Center" />
+                <ComboBox x:Name="cbxPttKey" VerticalAlignment="Center" MinWidth="100" SelectedValue="Space" IsEditable="True" />
+                <Button Margin="5,0" Content="刷新最后键盘按键" Width="150" HorizontalAlignment="Left" Click="CatchButton_Click"/>
             </StackPanel>
-            <TextBlock Text="输入框测试："
-                       Style="{StaticResource HeaderTextStyle}" />
-            <TextBox />
+            <TextBlock Text="拦截测试：" Style="{StaticResource HeaderTextStyle}" />
+            <TextBox x:Name="InputTextBox"/>
         </StackPanel>
     </ScrollViewer>
 </Window>

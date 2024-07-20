@@ -35,7 +35,7 @@ namespace RawFormInputProcessor.Demo
         private void OnKeyPressed(object sender, RawInputEventArgs e)
         {
             textBox2.Text = e.Key.ToString();
-            textBox3.Text = e.Device.Description;
+            textBox3.Text = e.Device.Name;
             //Event = e;
             //DeviceCount = _rawInput.NumberOfKeyboards;
             //e.Handled = (ShouldHandle.IsChecked == true);

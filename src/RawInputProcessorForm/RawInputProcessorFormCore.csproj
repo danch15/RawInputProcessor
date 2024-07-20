@@ -1,10 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net8.0-windows</TargetFramework>
-	<OutputType>WinExe</OutputType>
-    <UseWPF>true</UseWPF>
+    <UseWindowsForms>true</UseWindowsForms>
   </PropertyGroup>
   <ItemGroup>
-    <ProjectReference Include="..\RawInputProcessor\RawInputProcessorCore.csproj" />
+    <Compile Remove="RawPresentationInput.cs" />
   </ItemGroup>
 </Project>
