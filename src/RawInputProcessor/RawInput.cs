@@ -22,9 +22,9 @@ namespace RawInputProcessor
             get { return _keyboardDriver; }
         }
 
-        protected RawInput(IntPtr handle, RawInputCaptureMode captureMode)
+        protected RawInput(IntPtr handle, RawInputCaptureMode captureMode, bool peekMessage)
         {
-            _keyboardDriver = new RawKeyboard(handle, captureMode == RawInputCaptureMode.Foreground);
+            _keyboardDriver = new RawKeyboard(handle, captureMode == RawInputCaptureMode.Foreground, peekMessage);
         }
 
         public abstract void AddMessageFilter();

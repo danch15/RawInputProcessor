@@ -12,17 +12,17 @@ namespace RawInputProcessor
     public sealed class RawKeyboard : IDisposable
     {
         private static readonly Guid DeviceInterfaceHid = new Guid("4D1E55B2-F16F-11CF-88CB-001111000030");
-        
+
         private readonly Dictionary<IntPtr, RawKeyboardDevice> _deviceList = new Dictionary<IntPtr, RawKeyboardDevice>();
         private readonly object _lock = new object();
-        
+        private readonly bool peekMessage;
         private IntPtr _devNotifyHandle;
 
         public int NumberOfKeyboards { get; private set; }
-        
+
         public event EventHandler<RawInputEventArgs> KeyPressed;
 
-        public RawKeyboard(IntPtr hwnd, bool captureOnlyInForeground)
+        public RawKeyboard(IntPtr hwnd, bool captureOnlyInForeground, bool peekMessage)
         {
             RawInputDevice[] array =
             {
@@ -40,6 +40,7 @@ namespace RawInputProcessor
             }
             EnumerateDevices();
             _devNotifyHandle = RegisterForDeviceNotifications(hwnd);
+            this.peekMessage = peekMessage;
         }
 
         ~RawKeyboard()
@@ -201,10 +202,11 @@ namespace RawInputProcessor
                 var rawInputEventArgs = new RawInputEventArgs(device, isBreakBitSet ? KeyPressState.Up : KeyPressState.Down,
                     message, key, vKey);
                 keyPressed(this, rawInputEventArgs);
-                if (rawInputEventArgs.Handled)
+                if (peekMessage && rawInputEventArgs.Handled)
                 {
                     MSG msg;
                     Win32Methods.PeekMessage(out msg, IntPtr.Zero, Win32Consts.WM_KEYDOWN, Win32Consts.WM_KEYUP, Win32Consts.PM_REMOVE);
+                    Debug.WriteLine($"PeekMessage,rawInputEventArgs.Handled:{rawInputEventArgs.Handled}");
                 }
                 return rawInputEventArgs.Handled;
             }

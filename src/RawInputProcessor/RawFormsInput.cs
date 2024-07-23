@@ -66,12 +66,18 @@ namespace RawInputProcessor
                 {
                     if (_rawFormsInput.KeyboardDriver.HandleMessage(m.Msg, m.WParam, m.LParam))
                         this.filterNext = true;
+                    else
+                        this.filterNext = false;
                 }
 
                 if (m.Msg == Win32Consts.WM_KEYDOWN && this.filterNext)
                 {
-                    this.filterNext = false;
                     return true;
+                }
+
+                if (m.Msg == Win32Consts.WM_KEYUP && this.filterNext)
+                {
+                    this.filterNext = false;
                 }
 
                 if (m.Msg == Win32Consts.WM_INPUT_DEVICE_CHANGE)
