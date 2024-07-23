@@ -18,7 +18,7 @@ namespace RawInputProcessor
         private bool _hasFilter;
 
         public RawPresentationInput(HwndSource hwndSource, RawInputCaptureMode captureMode, bool addMessageFilter)
-            : base(hwndSource.Handle, captureMode)
+            : base(hwndSource.Handle, captureMode, !addMessageFilter)
         {
             if (addMessageFilter) //Windows 10及以上系统走OnThreadFilterMessage
                 AddMessageFilter();
@@ -27,7 +27,7 @@ namespace RawInputProcessor
         }
 
         public RawPresentationInput(Visual visual, RawInputCaptureMode captureMode, bool addMessageFilter = true)
-            : this(GetHwndSource(visual), captureMode, addMessageFilter)
+            : this(GetHwndSource(visual), captureMode, !addMessageFilter)
         {
         }
 
@@ -67,17 +67,23 @@ namespace RawInputProcessor
         private void OnThreadFilterMessage(ref MSG msg, ref bool handled)
         {
             //handled = KeyboardDriver.HandleMessage(msg.message, msg.wParam, msg.lParam); //Windows 10以下系统才能PeekMessage
-
+            
             if (msg.message == Win32Consts.WM_INPUT)
             {
                 if (KeyboardDriver.HandleMessage(msg.message, msg.wParam, msg.lParam))
                     this.filterNext = true;
+                else
+                    this.filterNext = false;
             }
 
             if (msg.message == Win32Consts.WM_KEYDOWN && this.filterNext)
             {
-                this.filterNext = false;
                 handled = true;
+            }
+
+            if (msg.message == Win32Consts.WM_KEYUP && this.filterNext)
+            {
+                this.filterNext = false;
             }
 
             if (msg.message == Win32Consts.WM_INPUT_DEVICE_CHANGE)

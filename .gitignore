@@ -184,3 +184,5 @@ FakesAssemblies/
 /.vs
 /src/.vs/RawInputProcessor/FileContentIndex
 /src/.vs/RawInputProcessor/v17
+/src/.vs
+/src/RawInputProcessor/.vs

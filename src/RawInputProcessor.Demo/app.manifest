@@ -42,6 +42,9 @@
       <!-- Windows 10 -->
       <supportedOS Id="{8e0f7a12-bfb3-4fe8-b9a5-48fd50a15a9a}" />
 
+      <!-- Windows 11 -->
+      <supportedOS Id="{3c8e3f97-1d3b-4a5e-9d6b-62f7dcdc8f13}" />
+
     </application>
   </compatibility>
 
