@@ -18,7 +18,7 @@ namespace RawInputProcessor
         private bool _hasFilter;
 
         public RawPresentationInput(HwndSource hwndSource, RawInputCaptureMode captureMode, bool addMessageFilter)
-            : base(hwndSource.Handle, captureMode, !addMessageFilter)
+            : base(hwndSource.Handle, captureMode, peekMessage: !addMessageFilter)
         {
             if (addMessageFilter) //Windows 10及以上系统走OnThreadFilterMessage
                 AddMessageFilter();
@@ -27,7 +27,7 @@ namespace RawInputProcessor
         }
 
         public RawPresentationInput(Visual visual, RawInputCaptureMode captureMode, bool addMessageFilter = true)
-            : this(GetHwndSource(visual), captureMode, !addMessageFilter)
+            : this(GetHwndSource(visual), captureMode, addMessageFilter)
         {
         }
 
