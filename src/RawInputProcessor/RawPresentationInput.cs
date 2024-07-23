@@ -1,6 +1,5 @@
 using RawInputProcessor.Win32;
 using System;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -19,7 +18,7 @@ namespace RawInputProcessor
         private bool _hasFilter;
 
         public RawPresentationInput(HwndSource hwndSource, RawInputCaptureMode captureMode, bool addMessageFilter)
-            : base(hwndSource.Handle, captureMode, !addMessageFilter)
+            : base(hwndSource.Handle, captureMode, peekMessage: !addMessageFilter)
         {
             if (addMessageFilter) //Windows 10及以上系统走OnThreadFilterMessage
                 AddMessageFilter();
@@ -75,25 +74,25 @@ namespace RawInputProcessor
                     this.filterNext = true;
                 else
                     this.filterNext = false;
-                Debug.WriteLine($"{msg.message} filterNext:{filterNext} handled:{handled}");
+                //Debug.WriteLine($"{msg.message} filterNext:{filterNext} handled:{handled}");
             }
 
             if (msg.message == Win32Consts.WM_KEYDOWN && this.filterNext)
             {
                 handled = true;
-                Debug.WriteLine($"{msg.message} filterNext:{filterNext} handled:{handled}");
+                //Debug.WriteLine($"{msg.message} filterNext:{filterNext} handled:{handled}");
             }
 
             if (msg.message == Win32Consts.WM_KEYUP && this.filterNext)
             {
                 this.filterNext = false;
-                Debug.WriteLine($"{msg.message} filterNext:{filterNext} handled:{handled}");
+                //Debug.WriteLine($"{msg.message} filterNext:{filterNext} handled:{handled}");
             }
 
             if (msg.message == Win32Consts.WM_INPUT_DEVICE_CHANGE)
             {
                 KeyboardDriver.HandleMessage(msg.message, msg.wParam, msg.lParam);
-                Debug.WriteLine($"{msg.message} filterNext:{filterNext} handled:{handled}");
+                //Debug.WriteLine($"{msg.message} filterNext:{filterNext} handled:{handled}");
             }
         }
     }

@@ -30,7 +30,7 @@ namespace RawInputProcessor
         }
 
         public RawFormsInput(IntPtr parentHandle, RawInputCaptureMode captureMode, bool addMessageFilter = true)
-            : base(parentHandle, captureMode)
+            : base(parentHandle, captureMode, peekMessage: !addMessageFilter)
         {
             if (addMessageFilter) //Windows 10及以上系统走OnThreadFilterMessage
                 AddMessageFilter();
