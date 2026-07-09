@@ -11,6 +11,7 @@ namespace RawInputProcessor.Win32
         internal const int WM_KEYDOWN = 256;
         internal const int WM_KEYUP = 257;
         internal const int WM_SYSKEYDOWN = 260;
+        internal const int WM_SYSKEYUP = 261;
         internal const int WM_INPUT = 255;
         internal const int WM_USB_DEVICECHANGE = 537;
         internal const int WM_INPUT_DEVICE_CHANGE = 254;

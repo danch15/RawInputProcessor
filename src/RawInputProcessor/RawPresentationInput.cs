@@ -8,22 +8,16 @@ namespace RawInputProcessor
 {
     public class RawPresentationInput : RawInput
     {
-
-        /// <summary>
-        /// Gets or sets a value indicating whether or not the next keydown message
-        /// should be filtered.
-        /// </summary>
-        private bool filterNext;
-
+        private readonly LegacyKeyboardMessageSuppressor messageSuppressor = new LegacyKeyboardMessageSuppressor();
         private bool _hasFilter;
 
         public RawPresentationInput(HwndSource hwndSource, RawInputCaptureMode captureMode, bool addMessageFilter)
             : base(hwndSource.Handle, captureMode, peekMessage: !addMessageFilter)
         {
-            if (addMessageFilter) //Windows 10及以上系统走OnThreadFilterMessage
+            if (addMessageFilter)
                 AddMessageFilter();
             else
-                hwndSource.AddHook(Hook); //Windows 10以下系统走Hook
+                hwndSource.AddHook(Hook);
         }
 
         public RawPresentationInput(Visual visual, RawInputCaptureMode captureMode, bool addMessageFilter = true)
@@ -43,7 +37,17 @@ namespace RawInputProcessor
 
         private IntPtr Hook(IntPtr hwnd, int msg, IntPtr wparam, IntPtr lparam, ref bool handled)
         {
-            KeyboardDriver.HandleMessage(msg, wparam, lparam);
+            var result = KeyboardDriver.HandleMessageResult(msg, wparam, lparam);
+            if (result.Handled)
+            {
+                messageSuppressor.Enqueue(result.Message, result.VirtualKey);
+            }
+
+            if (messageSuppressor.ShouldSuppress(msg, wparam))
+            {
+                handled = true;
+            }
+
             return IntPtr.Zero;
         }
 
@@ -59,40 +63,25 @@ namespace RawInputProcessor
 
         public override void RemoveMessageFilter()
         {
+            if (!_hasFilter)
+            {
+                return;
+            }
             ComponentDispatcher.ThreadFilterMessage -= OnThreadFilterMessage;
             _hasFilter = false;
         }
 
-        // ReSharper disable once RedundantAssignment
         private void OnThreadFilterMessage(ref MSG msg, ref bool handled)
         {
-            //handled = KeyboardDriver.HandleMessage(msg.message, msg.wParam, msg.lParam); //Windows 10以下系统才能PeekMessage
-            
-            if (msg.message == Win32Consts.WM_INPUT)
+            var result = KeyboardDriver.HandleMessageResult(msg.message, msg.wParam, msg.lParam);
+            if (result.Handled)
             {
-                if (KeyboardDriver.HandleMessage(msg.message, msg.wParam, msg.lParam))
-                    this.filterNext = true;
-                else
-                    this.filterNext = false;
-                //Debug.WriteLine($"{msg.message} filterNext:{filterNext} handled:{handled}");
+                messageSuppressor.Enqueue(result.Message, result.VirtualKey);
             }
 
-            if (msg.message == Win32Consts.WM_KEYDOWN && this.filterNext)
+            if (messageSuppressor.ShouldSuppress(msg.message, msg.wParam))
             {
                 handled = true;
-                //Debug.WriteLine($"{msg.message} filterNext:{filterNext} handled:{handled}");
-            }
-
-            if (msg.message == Win32Consts.WM_KEYUP && this.filterNext)
-            {
-                this.filterNext = false;
-                //Debug.WriteLine($"{msg.message} filterNext:{filterNext} handled:{handled}");
-            }
-
-            if (msg.message == Win32Consts.WM_INPUT_DEVICE_CHANGE)
-            {
-                KeyboardDriver.HandleMessage(msg.message, msg.wParam, msg.lParam);
-                //Debug.WriteLine($"{msg.message} filterNext:{filterNext} handled:{handled}");
             }
         }
     }

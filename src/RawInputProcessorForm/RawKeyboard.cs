@@ -158,11 +158,11 @@ namespace RawInputProcessor
             return null;
         }
 
-        private bool ProcessRawInput(IntPtr hdevice)
+        private RawInputMessageResult ProcessRawInput(IntPtr hdevice)
         {
             if (_deviceList.Count == 0)
             {
-                return false;
+                return default(RawInputMessageResult);
             }
             int size = 0;
             Win32Methods.GetRawInputData(hdevice, DataCommand.RID_INPUT, IntPtr.Zero, ref size, Marshal.SizeOf(typeof(RawInputHeader)));
@@ -170,14 +170,14 @@ namespace RawInputProcessor
             if (Win32Methods.GetRawInputData(hdevice, DataCommand.RID_INPUT, out rawBuffer, ref size, Marshal.SizeOf(typeof(RawInputHeader))) != size)
             {
                 Debug.WriteLine("Error getting the rawinput buffer");
-                return false;
+                return default(RawInputMessageResult);
             }
             int vKey = rawBuffer.data.keyboard.VKey;
             int makecode = rawBuffer.data.keyboard.Makecode;
             int flags = rawBuffer.data.keyboard.Flags;
             if (vKey == Win32Consts.KEYBOARD_OVERRUN_MAKE_CODE)
             {
-                return false;
+                return default(RawInputMessageResult);
             }
 
             RawKeyboardDevice device;
@@ -186,7 +186,7 @@ namespace RawInputProcessor
                 if (!_deviceList.TryGetValue(rawBuffer.header.hDevice, out device))
                 {
                     Debug.WriteLine("Handle: {0} was not in the device list.", rawBuffer.header.hDevice);
-                    return false;
+                    return default(RawInputMessageResult);
                 }
             }
 
@@ -205,11 +205,13 @@ namespace RawInputProcessor
                 if (peekMessage && rawInputEventArgs.Handled)
                 {
                     Message msg;
-                    Win32Methods.PeekMessage(out msg, IntPtr.Zero, Win32Consts.WM_KEYDOWN, Win32Consts.WM_KEYUP, Win32Consts.PM_REMOVE);
+                    Win32Methods.PeekMessage(out msg, IntPtr.Zero, Win32Consts.WM_KEYDOWN, Win32Consts.WM_SYSKEYUP, Win32Consts.PM_REMOVE);
                 }
-                return rawInputEventArgs.Handled;
+                return rawInputEventArgs.Handled
+                    ? new RawInputMessageResult(true, (int)message, rawInputEventArgs.VirtualKey)
+                    : default(RawInputMessageResult);
             }
-            return false;
+            return default(RawInputMessageResult);
         }
 
         private static int AdjustVirtualKey(InputData rawBuffer, int virtualKey, bool isE0BitSet, int makeCode)
@@ -249,6 +251,11 @@ namespace RawInputProcessor
 
         public bool HandleMessage(int msg, IntPtr wparam, IntPtr lparam)
         {
+            return HandleMessageResult(msg, wparam, lparam).Handled;
+        }
+
+        internal RawInputMessageResult HandleMessageResult(int msg, IntPtr wparam, IntPtr lparam)
+        {
             switch (msg)
             {
                 case Win32Consts.WM_INPUT_DEVICE_CHANGE:
@@ -257,7 +264,7 @@ namespace RawInputProcessor
                 case Win32Consts.WM_INPUT:
                     return ProcessRawInput(lparam);
             }
-            return false;
+            return default(RawInputMessageResult);
         }
 
         public static string GetDeviceDianostics()
